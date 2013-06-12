@@ -1,8 +1,8 @@
 function update() {
-  var items = '["' + $('.item .content').map(function() {
+  var items = '[' + $('.item .content').map(function() {
     // arcalyth (24 April 2011): added another replace() to handle quote escape
-    return $(this).text().replace(/[\n\r\t]/g, "").replace(/(\\\"|\")/g, '\\"');
-  }).get().join('", "') + '"]';
+    return '['+$(this).parent().hasClass('completed')+',"'+$(this).text().replace(/[\n\r\t]/g, "").replace(/(\\\"|\")/g, '\\"')+'"]';
+  }).get().join(',') + ']';
   localStorage['wisbd'] = items;
 }
 
@@ -10,11 +10,15 @@ function setTitle(title) {
   localStorage['wisbd-title'] = title;
 }
 
-function newItem(str) {
-  var li = $('<li class="item"><span class="drag">&#187;</span><span class="content">'+str+'</span><span class="widgets"><span class="up"></span><span class="down"></span><span class="remove"></span></span></li>');
+function newItem(item) {
+  var li = $('<li class="item"><span class="drag">&#187;</span><span class="content">'+item[1]+'</span><span class="widgets"><span class="up"></span><span class="down"></span><span class="complete"></span><span class="remove"></span></span></li>');
   li.find('.up').html("&uArr;");
   li.find('.down').html('&dArr;');
+  li.find('.complete').text('C');
   li.find('.remove').text('X');
+  if (item[0]) {
+    li.addClass('completed');
+  }
   return li;
 }
 
@@ -65,9 +69,9 @@ $(document).ready(function() {
     // Handle new items
     if(e.keyCode == 13) {
       if($('#next').val() != '') {
-        $('#new-item').before(newItem($('#next').val()));
+        $('#new-item').before(newItem([false, $('#next').val()]));
         update();
-        $('#next').text('');
+        $('#next').val('');
         e.preventDefault();
       }
     } else if (e.keyCode == 9) {
@@ -94,6 +98,12 @@ $(document).ready(function() {
   // Handle removing items
   $(".remove").live("click", function() {
     $(this).parent().parent().replaceWith("");
+    update();
+  });
+
+  // Handle removing items
+  $(".complete").live("click", function() {
+    $(this).parent().parent().toggleClass('completed');
     update();
   });
 
@@ -125,12 +135,12 @@ $(document).ready(function() {
       if($(this).val() == '') {
         $(this).parent().parent().remove('li.update');
       } else {
-        $(this).parent().parent().replaceWith(newItem($(this).val()));
+        $(this).parent().parent().replaceWith(newItem([false, $(this).val()]));
       }
       update();
     } else if(e.keyCode == 9) {
       e.preventDefault();
-      var li = newItem($(this).val());
+      var li = newItem([false, $(this).val()]);
       var next;
       if(!e.shiftKey) {
         next = $(this).parent().parent().next();
@@ -157,7 +167,7 @@ $(document).ready(function() {
     rep.append('<span class="drag">&#187;</span><span class="container"><textarea class="edit">'+$(this).text()+'</textarea></span>');
     $(this).parent().replaceWith(rep);
     rep.find('textarea').blur(function() {
-      $(this).parent().parent().replaceWith(newItem($(this).val()));
+      $(this).parent().parent().replaceWith(newItem([false, $(this).val()]));
       update();
     }).focus().click().TextAreaExpander();
   });
@@ -202,7 +212,7 @@ $(document).ready(function() {
       }
     }
   } else {
-    $('#list').prepend(newItem('Go to the options on the extension page to customize appearance.'));
+    $('#list').prepend(newItem([false, 'Go to the options on the extension page to customize appearance.']));
   }
 
   $("#list").dragsort({ dragEnd: update, dragSelector: ".drag" });

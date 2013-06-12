@@ -69,9 +69,22 @@ textarea {
   display: inline-block;
 }
 
-.remove {
+.complete {
   margin-top: -1.07em;
   margin-left: 0.7em;
+  font-size: 95%;
+  display: block;
+}
+
+.item.completed .content {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+
+.remove {
+  margin-top: -1.07em;
+  margin-left: 1.4em;
   display: block;
 }
 
