@@ -13,5 +13,5 @@
     "newtab": "newtab.html"
   },
   "options_page": "newoptions.html",
-  "update_url": "http://github.com/benhiller/chrome-todo/raw/master/updates.xml"
+  "update_url": "http://github.com/mcolyer/chrome-todo/raw/master/updates.xml",
 }
