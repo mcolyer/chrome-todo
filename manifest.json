@@ -1,4 +1,5 @@
 {
+  "manifest_version": 2,
   "name": "Things To Do",
   "description": "A simple extension that replaces the new tab page with a to do list. Add it and watch your productivity soar!",
   "icons": {
