@@ -53,7 +53,6 @@ function reloadParams() {
       } else {
         document.styleSheets[0].deleteRule(rule.index);
       }
-      console.log(rule.selector + " { " + rule.name + ": " + localStorage[param] + "; }");
       document.styleSheets[0].insertRule(rule.selector + " { " + rule.name + ": " + localStorage[param] + "; }", rule.index);
     }
   }
